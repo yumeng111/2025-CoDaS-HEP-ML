@@ -51,7 +51,7 @@ def process_jet_to_clusters(image, R=0.4, pt_min=0.1, max_clusters=2):
     return cluster_features
 
 class JetClusterDataset(Dataset):
-    def __init__(self, images, labels, R=0.4, pt_min=0.1, max_clusters=10):
+    def __init__(self, images, labels=None, R=0.4, pt_min=0.1, max_clusters=10):
         """Initialize the dataset.
         
         Args:
@@ -62,7 +62,10 @@ class JetClusterDataset(Dataset):
             max_clusters (int): Maximum number of clusters to keep per jet
         """
         self.images = images
-        self.labels = torch.FloatTensor(labels)
+        if labels is not None:
+            self.labels = torch.FloatTensor(labels)
+        else:
+            self.labels = torch.zeros(len(images))
         self.R = R
         self.pt_min = pt_min
         self.max_clusters = max_clusters

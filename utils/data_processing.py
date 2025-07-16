@@ -229,7 +229,7 @@ def extract_cluster_features(clusters):
     
     return features
 
-def create_graph_data(jet_images, labels, max_nodes=100, consider_all_nodes=True):
+def create_graph_data(jet_images, labels=None, max_nodes=100, consider_all_nodes=True):
     """
     Convert jet images to graph format for GNN using PyTorch Geometric format
     Args:
@@ -244,7 +244,8 @@ def create_graph_data(jet_images, labels, max_nodes=100, consider_all_nodes=True
     
     # Normalize the input images
     jet_images = (jet_images - jet_images.mean()) / (jet_images.std() + 1e-8)
-    
+    if labels is None:
+        labels = np.zeros(len(jet_images))
     # Iterate over each image and its corresponding label
     for i, (image, label) in enumerate(zip(jet_images, labels)):
         # Get image dimensions (30x30x1)
