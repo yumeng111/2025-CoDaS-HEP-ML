@@ -1,10 +1,12 @@
+import mplhep as hep 
+hep.style.use("CMS")
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 from sklearn.metrics import confusion_matrix
-import mplhep as hep 
 from sklearn.metrics import roc_curve, auc
-hep.style.use("CMS")
+
 
 def plot_feature_distributions(df, title, output_dir='processed_data'):
     """
@@ -54,10 +56,15 @@ def plot_training_history(history, metrics=['loss', 'accuracy']):
     fig, axes = plt.subplots(1, len(metrics), figsize=(15, 5))
     if len(metrics) == 1:
         axes = [axes]
-    
+
+    try: 
+        # this is the syntax for keras 
+        hist = history.history
+    except: 
+        hist = history
     for ax, metric in zip(axes, metrics):
-        ax.plot(history[metric], label=f'Training {metric}')
-        ax.plot(history[f'val_{metric}'], label=f'Validation {metric}')
+        ax.plot(hist[metric], label=f'Training {metric}')
+        ax.plot(hist[f'val_{metric}'], label=f'Validation {metric}')
         ax.set_xlabel('Epoch')
         ax.set_ylabel(metric.capitalize())
         ax.legend()
@@ -84,7 +91,7 @@ def plot_roc_curve(y_true, y_pred_proba):
     fpr, tpr, thresholds = roc_curve(y_true, y_pred_proba)
     roc_auc = auc(fpr, tpr)
     plt.figure()
-    plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot(fpr, tpr, label='ROC curve (area = %0.6f)' % roc_auc)
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('ROC Curve')
